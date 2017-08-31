@@ -2,17 +2,17 @@ import cv2
 
 
 class CreateDataSet():
-    font = cv2.FONT_HERSHEY_SIMPLEX
-
     def __init__(self):
-        self.imagesPath = 'C:\\Users\\skconan\\Desktop\\classification_shape\\images\\'
-        self.filePath = 'C:\\Users\\skconan\\Desktop\\classification_shape\\images\\'
+        self.imagesPath = 'C:\\Users\\skconan\\Desktop\\classification_rect\\images\\'
+        self.filePath = 'C:\\Users\\skconan\\Desktop\\classification_rectangle\\src_code\\'
+        self.font = cv2.FONT_HERSHEY_SIMPLEX
         self.imageW = 300
         self.imageH = 300
         self.minCntArea = 100
         self.maxCntArea = 500
-
+        self.fileType = '.txt'
     def create_file(self, name, dataList):
+        name += self.fileType
         while True:
             name = self.filePath+name
             try:
@@ -21,9 +21,8 @@ class CreateDataSet():
                 if not cmd == 'y':
                     name = input('File name: ')
                     continue
-
-            except ValueError:
-                f = open(name, 'r+')
+            except FileNotFoundError:
+                pass
             f = open(name, 'w+')
             break
         text = ''
@@ -31,7 +30,7 @@ class CreateDataSet():
             for word in line:
                 text += str(word) + " "
             text += '\n'
-        print text
+        print(text)
         f.write(text)
         f.close()
         print('Finish')
@@ -43,9 +42,9 @@ class CreateDataSet():
         gray = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
         ret, th = cv2.threshold(gray.copy(), 250, 255, 0)
         _, cnts, h = cv2.findContours(th, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-        data = []
+        cntArea = cv2.contourArea(cnts)
         for c in cnts:
-            if cv2.contourArea(c) < self.minCntArea or cv2.contourArea(c) > self.maxCntArea:
+            if  cntArea < self.minCntArea or cntArea > self.maxCntArea:
                 continue
             peri = cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, 0.04 * peri, True)
@@ -59,7 +58,14 @@ class CreateDataSet():
             cv2.putText(resCnt, str(int(peri)) + " " + str(sides), (cx, cy),
                         font, 0.5, (0, 50, 25), 1, cv2.LINE_AA)
 
-            data.append((sides))
-
         cv2.imshow('result', resCnt)
         cv2.waitKey(0)
+        return (sides,areaRatio)
+
+        
+    def run():
+        pass      
+if __name__=='__main__':
+    cds = CreateDataSet()
+    data = [[121,32],[621,72],[1231,323]]
+    cds.create_file('test',data)
