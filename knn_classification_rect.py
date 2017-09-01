@@ -54,3 +54,4 @@ class KNN:
         return (correct/self.sizeOfTest)*100.0
     
     def run():
+        pass
