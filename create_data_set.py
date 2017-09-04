@@ -11,11 +11,12 @@ class CreateDataSet():
         self.minCntArea = 500
         self.maxCntArea = 150000
         self.fileType = '.txt'
-        self.noOftraning = 8
+        self.noOftraning = 20
 
     def create_file(self, name, dataList):
-        name += self.fileType
+        
         while True:
+            name += self.fileType
             name = self.filePath + name
             try:
                 f = open(name, 'r+')
@@ -37,7 +38,8 @@ class CreateDataSet():
         f.close()
         print('Created ' + str(name))
 
-    def find_features(self, img):
+    def find_features(self, imgPath):
+        img = cv2.imread(imgPath)
         r, c, ch = img.shape
         img = cv2.resize(img, (self.imageW, self.imageH))
         res = img.copy()
@@ -62,14 +64,17 @@ class CreateDataSet():
                     self.font, 0.5, (0, 50, 25), 1, cv2.LINE_AA)
 
         cv2.imshow('result', res)
-        cv2.waitKey(0)
-        return [sides, areaRatio]
+        k = cv2.waitKey(0) & 0xFF
+        check = False
+        if k == ord('y'):
+            check = True
+        return [sides, areaRatio, str(check),imgPath]
 
     def run(self):
         dataList = []
-        for no in range(self.noOftraning):
-            img = cv2.imread(self.imagesPath+"0"+str(no)+".jpg")
-            data = self.find_features(img)
+        for no in range(self.noOftraning+1):
+            # img = cv2.imread()
+            data = self.find_features(self.imagesPath+str(no)+".jpg")
             print( data)
             dataList.append(data)
         self.create_file('trainingSet1',dataList)
