@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import math
 import operator
+import random
 
 class KNN:
     def __init__(self):
@@ -32,7 +33,19 @@ class KNN:
     
     def get_data_set(self):
         data = self.read_file('trainingSet1')
-        return [],[]
+        trainingSet = []
+        testSet = []
+        for d in data:
+            rand = random.random()
+            if rand >= 0.7:
+                testSet.append(d)
+            else :
+                trainingSet.append(d)
+        print(testSet)
+        print("")
+        print(trainingSet)
+        return trainingSet,testSet
+
     def euclidean_distance(self, instance1, instance2):
         distance = 0
         # number of attributes
