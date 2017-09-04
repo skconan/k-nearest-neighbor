@@ -78,7 +78,7 @@ class KNN:
         vote_sort = sorted(class_vote.items(), key=operator, reverse=True)
         return vote_sort[0][0]
 
-    def get_accuracy(predictions):
+    def get_accuracy(self,predictions):
         # test set number
         correct = 0
         for tsNO in range(self.sizeOfTest):
@@ -86,7 +86,7 @@ class KNN:
                 correct += 1.0
         return (correct/self.sizeOfTest)*100.0
     
-    def run():
+    def run(self):
         pass
 
 if __name__=='__main__':
