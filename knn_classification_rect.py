@@ -5,14 +5,34 @@ import operator
 
 class KNN:
     def __init__(self):
-        pass
-        self.trainingSet = []
+        self.imagesPath = 'C:\\Users\\skconan\\Desktop\\classification_rectangle\\images\\rectangle_training\\'
+        self.filePath = 'C:\\Users\\skconan\\Desktop\\classification_rectangle\\src_code\\'
+        self.fileType = '.txt'
+        self.trainingSet, self.testSet = self.get_data_set()
         self.sizeOfTraning = len(self.trainingSet)
-        self.testSet = []
         self.sizeOfTest = len(self.testSet)
         # Number of traningSet around testSet
         self.k = 3
         self.accuracy = 0
+    def read_file(self,name):
+        data = []
+        name += self.fileType
+        name = self.filePath + name
+        print(name)
+        f = open(name, 'r')
+        while True:
+            line = f.readline()
+            if line == '':
+                break
+            cols = line.split(' ')
+            row = [int(cols[0]),float(cols[1]),bool(cols[2]=='True'),cols[3]]
+            # print(row)
+            data.append(row)
+        return data
+    
+    def get_data_set(self):
+        data = self.read_file('trainingSet1')
+        return [],[]
     def euclidean_distance(self, instance1, instance2):
         distance = 0
         # number of attributes
@@ -55,3 +75,7 @@ class KNN:
     
     def run():
         pass
+
+if __name__=='__main__':
+    knn = KNN()
+    # knn.read_file()
