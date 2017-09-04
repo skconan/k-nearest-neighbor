@@ -9,6 +9,7 @@ class KNN:
         self.imagesPath = 'C:\\Users\\skconan\\Desktop\\classification_rectangle\\images\\rectangle_training\\'
         self.filePath = 'C:\\Users\\skconan\\Desktop\\classification_rectangle\\src_code\\'
         self.fileType = '.txt'
+        self.font = cv2.FONT_HERSHEY_SIMPLEX
         self.trainingSet, self.testSet = self.get_data_set()
         self.sizeOfTraning = len(self.trainingSet)
         self.sizeOfTest = len(self.testSet)
@@ -49,7 +50,7 @@ class KNN:
     def euclidean_distance(self, instance1, instance2):
         distance = 0
         # number of attributes
-        size = len(instance1) - 1
+        size = len(instance1) - 2
         for attNO in range(size):
             distance += pow((instance1[attNO] - instance2[attNO]), 2)
         return math.sqrt(distance)
@@ -70,25 +71,39 @@ class KNN:
     def get_answer(self,neighbours):
         class_vote={}
         for neighbour in neighbours:
-            response = neighbour[-1]
+            response = neighbour[2]
             if response in class_vote:
                 class_vote[response] += 1
             else:
                 class_vote[response] = 1
-        vote_sort = sorted(class_vote.items(), key=operator, reverse=True)
+        print(class_vote)
+        vote_sort = sorted(class_vote.items(), key=operator.itemgetter(1), reverse=True)
         return vote_sort[0][0]
 
     def get_accuracy(self,predictions):
         # test set number
         correct = 0
         for tsNO in range(self.sizeOfTest):
-            if self.testSet[tsNO][-1] is predictions[tsNO]:
+            if self.testSet[tsNO][2] is predictions[tsNO]:
                 correct += 1.0
-        return (correct/self.sizeOfTest)*100.0
+        return (correct/float(self.sizeOfTest))*100.0
     
     def run(self):
-        pass
+        print('Number Of Training Set: ',self.sizeOfTraning)
+        print('Number Of Test Set: ',self.sizeOfTest)
+        predictions = []
+        for no in range(self.sizeOfTest):
+            neighbours = self.get_neighbours(self.testSet[no])
+            ans = self.get_answer(neighbours)
+            predictions.append(ans)
+            img = cv2.imread(self.testSet[no][-1])
+            cv2.putText(img, "predicted: "+str(ans)+" actual: "+str(self.testSet[no][2]), (10, 290),
+                    self.font, 0.5, (0, 50, 25), 1, cv2.LINE_AA)
+            cv2.imshow('img',img)
+            cv2.waitKey(0)
+        print(self.get_accuracy(predictions))
 
 if __name__=='__main__':
     knn = KNN()
     # knn.read_file()
+    knn.run()
