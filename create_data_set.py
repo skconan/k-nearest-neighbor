@@ -69,15 +69,29 @@ class CreateDataSet():
         if k == ord('y'):
             check = True
         return [sides, areaRatio, str(check),imgPath]
+    def normalize(self,dataList):
+        sidesMax = max(dataList, key=lambda item: item[0])[0]
+        sidesMin = min(dataList, key=lambda item: item[0])[0]
+        sidesDiff = sidesMax - sidesMin
+        areaRatioMax = max(dataList, key=lambda item: item[1])[1]
+        areaRatioMin = min(dataList, key=lambda item: item[1])[1]
+        areaRatioDiff = areaRatioMax - areaRatioMin
+        size = len(dataList)
+        for no in range(size):
+            dataList[no][0] = float(dataList[no][0]-sidesMin)/sidesDiff
+            dataList[no][1] = float(dataList[no][1]-areaRatioMin)/areaRatioDiff
+        return dataList
+            
 
     def run(self):
         dataList = []
         for no in range(self.noOftraning+1):
             # img = cv2.imread()
             data = self.find_features(self.imagesPath+str(no)+".jpg")
-            print( data)
+            print(data)
             dataList.append(data)
-        self.create_file('trainingSet1',dataList)
+        dataListNormalize = self.normalize(dataList)
+        self.create_file('trainingSet1',dataListNormalize)
 if __name__ == '__main__':
     cds = CreateDataSet()
     # data = [[121, 32], [621, 72], [1231, 323]]
