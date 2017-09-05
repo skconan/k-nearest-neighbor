@@ -14,7 +14,7 @@ class CreateDataSet():
         self.noOftraning = 20
 
     def create_file(self, name, dataList):
-        
+
         while True:
             name += self.fileType
             name = self.filePath + name
@@ -60,16 +60,19 @@ class CreateDataSet():
         cx, cy = int(x + w / 2), int(y + h / 2)
         cv2.drawContours(res, cnt, -1, (0, 255, 0), 3)
         cv2.drawContours(res, approx, -1, (0, 0, 205), 5)
+
+        cv2.rectangle(res, (x,y), (x+w,y+h), (0,255,255), 2)
         cv2.putText(res, str(int(peri)) + " " + str(sides), (cx, cy),
-                    self.font, 0.5, (0, 50, 25), 1, cv2.LINE_AA)
+                    self.font, 0.5, (0, 255, 255), 1, cv2.LINE_AA)
 
         cv2.imshow('result', res)
         k = cv2.waitKey(0) & 0xFF
         check = False
         if k == ord('y'):
             check = True
-        return [sides, areaRatio, str(check),imgPath]
-    def normalize(self,dataList):
+        return [sides, areaRatio, str(check), imgPath]
+
+    def normalize(self, dataList):
         sidesMax = max(dataList, key=lambda item: item[0])[0]
         sidesMin = min(dataList, key=lambda item: item[0])[0]
         sidesDiff = sidesMax - sidesMin
@@ -78,20 +81,22 @@ class CreateDataSet():
         areaRatioDiff = areaRatioMax - areaRatioMin
         size = len(dataList)
         for no in range(size):
-            dataList[no][0] = float(dataList[no][0]-sidesMin)/sidesDiff
-            dataList[no][1] = float(dataList[no][1]-areaRatioMin)/areaRatioDiff
+            dataList[no][0] = float(dataList[no][0] - sidesMin) / sidesDiff
+            dataList[no][1] = float(
+                dataList[no][1] - areaRatioMin) / areaRatioDiff
         return dataList
-            
 
     def run(self):
         dataList = []
-        for no in range(self.noOftraning+1):
+        for no in range(self.noOftraning + 1):
             # img = cv2.imread()
-            data = self.find_features(self.imagesPath+str(no)+".jpg")
+            data = self.find_features(self.imagesPath + str(no) + ".jpg")
             print(data)
             dataList.append(data)
         dataListNormalize = self.normalize(dataList)
-        self.create_file('trainingSet1',dataListNormalize)
+        self.create_file('trainingSet1', dataListNormalize)
+
+
 if __name__ == '__main__':
     cds = CreateDataSet()
     # data = [[121, 32], [621, 72], [1231, 323]]
